@@ -1,8 +1,20 @@
 'use strict'
 
-const path = require('path')
-const AutoLoad = require('@fastify/autoload')
+const path = require('path');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const AutoLoad = require('@fastify/autoload');
 
+const uri = process.env.DATABASE_URL.toString();
+mongoose.Promise = global.Promise
+
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => {
+  console.log("database connected");
+  console.log("successfully connected to mysql database")
+})
 // Pass --options via CLI arguments in command to enable these options.
 module.exports.options = {}
 
