@@ -6,13 +6,13 @@ const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-    teacherID: {
-      type: Number,
-      ref: "Teacher",
+    username: {
+      type: String,
+      default: "DefaultUser"
     },
-    addressID: {
-      type: Number,
-      ref: "Address"
+    teacherID: {
+        type: Number,
+        ref: "Teacher",
     },
     name: {
         type: String,

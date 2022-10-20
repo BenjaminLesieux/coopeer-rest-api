@@ -6,22 +6,21 @@ const bcrypt = require("bcryptjs");
 
 //TODO: doc
 function register(req, res) {
-    console.log(req);
     let newUser = new User(req.body);
     newUser.password = bcrypt.hashSync(req.body.password, 10);
 
     newUser.save().then(user => {
        const token = jwt.sign(
-           { email: user.email, name: user.name, surname: user.surname, _id: user._id },
+           { email: user.email, name: user.name, surname: user.surname, username: user.username, _id: user._id },
            process.env.SECRET,
            { expiresIn: 86400 } // 24 hours
        );
 
-       res.code(200).send({
+       return res.code(200).send({
            auth: true,
            token: token,
            user: user
-       });
+       })
     }).catch(err => {
         return res.code(403).send({
             auth: false,
@@ -32,11 +31,14 @@ function register(req, res) {
 
 //TODO: doc
 function logIn(req, res) {
-    console.log(req.body);
     User.findOne({ email: req.body.email }, (err, user) => {
        if (err) return res.code(500).send("Error on the server.");
 
-       if (!user) return res.code(404).send("No user found with email " + req.body.email);
+       if (!user) return res.code(200).send({
+           auth: false,
+           token: null,
+           errorMsg: "No user was found with these credentials : " + req.body
+       });
 
        const validPassword = bcrypt.compareSync(req.body.password, user.password);
 
@@ -47,16 +49,16 @@ function logIn(req, res) {
        });
 
        const token = jwt.sign(
-           { email: user.email, name: user.name, surname: user.surname, _id: user._id},
+           { email: user.email, name: user.name, surname: user.surname, learningXP: user.learningXP, _id: user._id},
            process.env.SECRET,
            { expiresIn: 86400 } // 24 hours
        );
 
-       res.code(200).send({
+       return res.code(200).send({
            auth: true,
            token: token,
            user: user
-       });
+       })
     });
 }
 

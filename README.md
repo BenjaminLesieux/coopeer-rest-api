@@ -1,5 +1,7 @@
-# Getting Started with [Fastify-CLI](https://www.npmjs.com/package/fastify-cli)
-This project was bootstrapped with Fastify-CLI.
+# Coopeer Backend
+
+RESTful API for the Cooper website. \
+This project was done during the Advanced Web Programming course at Efrei Paris with the help of the following contributors : TODO
 
 ## Available Scripts
 
