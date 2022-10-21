@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs");
 //TODO: doc
 function register(req, res) {
     console.log(req);
-    let newUser = new User(req.body);
+    const newUser = new User(req.body);
     newUser.password = bcrypt.hashSync(req.body.password, 10);
 
     newUser.save().then(user => {

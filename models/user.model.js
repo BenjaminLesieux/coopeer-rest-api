@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
     teacherID: {
-      type: Number,
+      type: String,
       ref: "Teacher",
     },
     addressID: {
