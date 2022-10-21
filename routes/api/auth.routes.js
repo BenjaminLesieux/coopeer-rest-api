@@ -7,8 +7,8 @@ module.exports = function (fastify, opts, done) {
         return userController.register(request, reply);
     });
 
-    fastify.post("/auth/login", function (request, reply) {
-        return userController.logIn(request, reply);
+    fastify.post('/auth/login', function (request, reply) {
+       return userController.logIn(request, reply);
     });
 
     done();
