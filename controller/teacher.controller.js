@@ -56,8 +56,6 @@ async function addSubjects(req, res) {
     for (const subject of req.body.subjects) {
         const validatedSubject = await Class.findOne({name:subject}).exec();
 
-        console.log(validatedSubject)
-
         if (!validatedSubject) {
             console.error(validatedSubject + " does not exists. Ignoring it.");
             continue;
