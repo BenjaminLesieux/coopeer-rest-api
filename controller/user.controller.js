@@ -4,6 +4,11 @@ const jwt = require("jsonwebtoken");
 
 const bcrypt = require("bcryptjs");
 
+function getUsers(req, res) {
+    User.find().then(users => {
+       return res.code(200).send(users);
+    });
+}
 //TODO: doc
 function register(req, res) {
     console.log(req);
@@ -73,5 +78,6 @@ function loginRequired(req, res, next) {
 
 module.exports = {
     register,
-    logIn
+    logIn,
+    getUsers
 }
