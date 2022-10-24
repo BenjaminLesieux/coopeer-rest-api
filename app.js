@@ -2,7 +2,7 @@
 
 const path = require('path');
 const mongoose = require('mongoose');
-const cors = require('cors');
+const cors = require('@fastify/cors');
 const AutoLoad = require('@fastify/autoload');
 const {jwtDecode} = require('jwt-decode');
 
@@ -37,5 +37,9 @@ module.exports = async function (fastify, opts) {
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'routes'),
     options: Object.assign({}, opts)
+  })
+
+  fastify.register(cors, {
+    origin: "*"
   })
 }

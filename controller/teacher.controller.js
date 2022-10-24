@@ -2,13 +2,10 @@ const User = require("../models/user.model");
 const Teacher = require("../models/teacher.model");
 const Class = require("../models/class.model");
 
-
-const jwtDecode = require("jwt-decode");
-const {sub} = require("tap");
-
+const {isAuthenticated, decodeToken} = require("./helpers");
 
 function registerTeacher(req, res) {
-    if (req.headers["authorization"] === undefined) {
+    if (!isAuthenticated(req, res)) {
         res.code(401).send("Must be connected to access this route");
         return;
     }
@@ -42,7 +39,7 @@ function registerTeacher(req, res) {
 }
 
 async function addSubjects(req, res) {
-    if (req.headers["authorization"] === undefined) {
+    if (!isAuthenticated(req, res)) {
         return res.code(401).send("User must be connected");
     }
 
@@ -66,18 +63,7 @@ async function addSubjects(req, res) {
     }
 }
 
-const decodeToken = (req, res) => {
-    const header = req.headers["authorization"];
-
-    if (header === undefined) {
-        return res.code(401).send("No token found");
-    }
-
-    const token = header.replace("Token ", "");
-    return jwtDecode(token);
-}
-
 module.exports = {
     registerTeacher,
-    addSubjects
+    addSubjects,
 }
