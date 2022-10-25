@@ -2,8 +2,9 @@
 
 const path = require('path');
 const mongoose = require('mongoose');
-const cors = require('cors');
+const cors = require('@fastify/cors');
 const AutoLoad = require('@fastify/autoload');
+const {jwtDecode} = require('jwt-decode');
 
 const uri = process.env.DATABASE_URL.toString();
 mongoose.Promise = global.Promise
@@ -36,5 +37,9 @@ module.exports = async function (fastify, opts) {
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'routes'),
     options: Object.assign({}, opts)
+  })
+
+  fastify.register(cors, {
+    origin: "*"
   })
 }

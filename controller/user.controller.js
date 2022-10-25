@@ -4,15 +4,26 @@ const jwt = require("jsonwebtoken");
 
 const bcrypt = require("bcryptjs");
 
+function getUsers(req, res) {
+    User.find().then(users => {
+       return res.code(200).send(users);
+    });
+}
+
+function getUserById(req, res) {
+    User.findById({_id:req.params.id}).then(users => {
+        return res.code(200).send(users);
+    });
+}
+
 //TODO: doc
 function register(req, res) {
-    console.log(req);
-    let newUser = new User(req.body);
+    const newUser = new User(req.body);
     newUser.password = bcrypt.hashSync(req.body.password, 10);
 
     newUser.save().then(user => {
        const token = jwt.sign(
-           { email: user.email, name: user.name, surname: user.surname, _id: user._id },
+           { email: user.email, name: user.name, surname: user.surname, _id: user._id, teacherID: user.teacherID },
            process.env.SECRET,
            { expiresIn: 86400 } // 24 hours
        );
@@ -32,7 +43,6 @@ function register(req, res) {
 
 //TODO: doc
 function logIn(req, res) {
-    console.log(req.body);
     User.findOne({ email: req.body.email }, (err, user) => {
        if (err) return res.code(500).send("Error on the server.");
 
@@ -47,7 +57,7 @@ function logIn(req, res) {
        });
 
        const token = jwt.sign(
-           { email: user.email, name: user.name, surname: user.surname, _id: user._id},
+           { email: user.email, name: user.name, surname: user.surname, _id: user._id, teacherID: user.teacherID},
            process.env.SECRET,
            { expiresIn: 86400 } // 24 hours
        );
@@ -73,5 +83,7 @@ function loginRequired(req, res, next) {
 
 module.exports = {
     register,
-    logIn
+    logIn,
+    getUsers,
+    getUserById
 }
