@@ -5,10 +5,12 @@ const Schema = mongoose.Schema;
 
 const CourseSchema = new Schema({
     date: {
-        type: Date
+        type: String,
+        required: true,
     },
     subject: {
-        type: String
+        type: String,
+        required: true,
     },
     teacherID: {
         type: String,

@@ -11,7 +11,6 @@ function getUsers(req, res) {
 }
 //TODO: doc
 function register(req, res) {
-    console.log(req);
     const newUser = new User(req.body);
     newUser.password = bcrypt.hashSync(req.body.password, 10);
 
@@ -37,7 +36,6 @@ function register(req, res) {
 
 //TODO: doc
 function logIn(req, res) {
-    console.log(req.body);
     User.findOne({ email: req.body.email }, (err, user) => {
        if (err) return res.code(500).send("Error on the server.");
 

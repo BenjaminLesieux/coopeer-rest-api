@@ -2,6 +2,7 @@ const User = require("../models/user.model");
 const Teacher = require("../models/teacher.model");
 const Class = require("../models/class.model");
 const Course = require("../models/course.model");
+const jwt = require("jsonwebtoken");
 
 const {isAuthenticated, decodeToken} = require("./helpers");
 
@@ -21,7 +22,10 @@ async function createNewCourse(req, res) {
 
     const decodedToken = decodeToken(req, res);
     const user = await User.findOne({email:decodedToken.email});
-    const course = new Course({date:Date.parse(req.body.date), subject:req.body.subject, teacherID:user.teacherID});
+    const course = new Course({teacherID:user.teacherID});
+
+    course.date = req.body.date;
+    course.subject = req.body.subject;
     course.students = [];
 
     await course.save();
@@ -40,7 +44,7 @@ async function getAllCourses(req, res) {
         return res.code(401).send("not a teacher");
     }
 
-    const course = await Course.find({teacherID:user.teacherID});
+    const course = await Course.find();
     return res.code(200).send(course);
 }
 
@@ -51,9 +55,13 @@ async function registerToCourse(req, res) {
 
     const {user, teacher} = await verifyAndGetUserAndTeacher(req, res);
 
-    const course = await Course.findOne({teacherID:teacher._id, subject:req.body.subject});
+    if (user.teacherID === teacher._id) return res.code(401).send({"error": "cannot attend your own classes"});
+
+    const course = await Course.findOne({teacherID:req.body.teacherID, subject:req.body.subject, _id:req.body._id});
 
     if (!course) return res.code(404).send("Couldn't find any courses");
+
+    if (course.students.includes(user._id)) return res.code(401).send({"error":"Already registered to this course"});
 
     await course.update({$push:{students:user._id}});
 
@@ -82,10 +90,15 @@ async function verifyAndGetUserAndTeacher(req, res) {
     const decodedToken = decodeToken(req, res);
 
     const user = await User.findOne({email:decodedToken.email});
+    let teacher = null;
 
     if (req.body !== undefined && req.body.teacherID !== undefined) {
-        const teacher = await Teacher.findById({_id:req.body.teacherID});
+        teacher = await Teacher.findById({_id:req.body.teacherID});
         if (!teacher) return res.code(404).send("Teacher was not found with this teacher id");
+    }
+
+    else if (user.teacherID !== undefined) {
+        teacher = await Teacher.findById({_id:user.teacherID});
     }
 
     if (!user) return res.code(404).send("User was not found with this token");
