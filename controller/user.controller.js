@@ -9,6 +9,13 @@ function getUsers(req, res) {
        return res.code(200).send(users);
     });
 }
+
+function getUserById(req, res) {
+    User.findById({_id:req.params.id}).then(users => {
+        return res.code(200).send(users);
+    });
+}
+
 //TODO: doc
 function register(req, res) {
     const newUser = new User(req.body);
@@ -16,7 +23,7 @@ function register(req, res) {
 
     newUser.save().then(user => {
        const token = jwt.sign(
-           { email: user.email, name: user.name, surname: user.surname, _id: user._id },
+           { email: user.email, name: user.name, surname: user.surname, _id: user._id, teacherID: user.teacherID },
            process.env.SECRET,
            { expiresIn: 86400 } // 24 hours
        );
@@ -50,7 +57,7 @@ function logIn(req, res) {
        });
 
        const token = jwt.sign(
-           { email: user.email, name: user.name, surname: user.surname, _id: user._id},
+           { email: user.email, name: user.name, surname: user.surname, _id: user._id, teacherID: user.teacherID},
            process.env.SECRET,
            { expiresIn: 86400 } // 24 hours
        );
@@ -77,5 +84,6 @@ function loginRequired(req, res, next) {
 module.exports = {
     register,
     logIn,
-    getUsers
+    getUsers,
+    getUserById
 }

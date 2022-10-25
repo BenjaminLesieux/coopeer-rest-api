@@ -15,5 +15,9 @@ module.exports = function (fastify, opts, done) {
        return userController.getUsers(request, reply);
     });
 
+    fastify.get('/users/:id', function (request, reply) {
+        return userController.getUserById(request, reply);
+    });
+
     done();
 }
