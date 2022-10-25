@@ -40,9 +40,6 @@ async function getAllCourses(req, res) {
     const decodedToken = decodeToken(req, res);
     const user = await User.findOne({email:decodedToken.email});
 
-    if (user.teacherID === undefined) {
-        return res.code(401).send("not a teacher");
-    }
 
     const course = await Course.find();
     return res.code(200).send(course);
