@@ -52,7 +52,7 @@ async function registerToCourse(req, res) {
 
     const {user, teacher} = await verifyAndGetUserAndTeacher(req, res);
 
-    if (user.teacherID === teacher._id) return res.code(401).send({"error": "cannot attend your own classes"});
+    if (user.teacherID === req.body.teacherID) return res.code(401).send({"error": "cannot attend your own classes"});
 
     const course = await Course.findOne({teacherID:req.body.teacherID, subject:req.body.subject, _id:req.body._id});
 

@@ -1,4 +1,5 @@
 const jwtDecode = require("jwt-decode");
+const jwt = require("jsonwebtoken");
 
 function decodeToken (req, res) {
     const header = req.headers["authorization"];
@@ -12,7 +13,7 @@ function decodeToken (req, res) {
 }
 
 function isAuthenticated(req, res) {
-    return req.headers["authorization"] !== undefined;
+    return req.headers["authorization"] !== undefined && jwt.verify(req.headers["authorization"].replace("Token ", ""), process.env.SECRET);
 }
 
 module.exports = {
